@@ -1,1 +1,34 @@
-<p>settings works!</p>
+<div class="container">
+    <div class="back-button">
+        <button mat-button (click)="onGoBack()">
+            <mat-icon>arrow_back</mat-icon> Go back
+        </button>
+    </div>
+    <div class="settings">
+        <mat-card class="card">
+            <mat-card-title class="card-item">
+                Settings
+            </mat-card-title>
+
+            <mat-card-content>
+                <div class="card-item">
+                    <mat-slide-toggle color="primary"> Dark Theme </mat-slide-toggle>
+                </div>
+
+                <div class="card-item">
+                    <form class="form">
+                        <mat-form-field class="full-width">
+                            <mat-label>Number of items per page</mat-label>
+                            <input matInput placeholder="Ex. 50">
+                        </mat-form-field>
+                    </form>
+                </div>
+
+                <div class="card-item">
+                    <button mat-raised-button color="primray" (click)="onValidate()"> Valider les paramètres </button>
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

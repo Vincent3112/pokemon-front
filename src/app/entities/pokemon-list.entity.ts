@@ -1,8 +1,8 @@
-import { Pokemon } from "./pokemon.entity";
+import { PokemonAccessPoint } from "./pokemon-access-point.entity";
 
 export interface PokemonList {
     count: number;
     next: string;
     previous: string;
-    results: Pokemon[]
+    results: PokemonAccessPoint[]
 }

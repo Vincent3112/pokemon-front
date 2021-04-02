@@ -1,0 +1,13 @@
+mat-toolbar{
+    background-color: grey;
+    height: 64px;
+    position: sticky;
+    position: -webkit-sticky; /* For macOS/iOS Safari */
+    top: 0; /* Sets the sticky toolbar to be on top */
+    z-index: 1000;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+  }
+  

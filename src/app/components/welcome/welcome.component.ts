@@ -1,16 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { PokemonAccessPoint } from '../../entities/pokemon-access-point.entity';
 import { Pokemon } from '../../entities/pokemon.entity';
 import { PokemonService } from '../../services/pokemon.service';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-welcome',
@@ -19,34 +15,34 @@ export interface PeriodicElement {
 })
 export class WelcomeComponent implements OnInit, OnDestroy {
 
-  public ELEMENT_DATA: PeriodicElement[] = [
-    { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-    { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-    { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-    { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-    { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-    { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-    { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-    { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-    { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-    { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-  ];
+  displayedColumns = ['name', 'addToFavourite'];
 
-  public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-
-  public dataSource = this.ELEMENT_DATA;
+  pokemonsAccessPoints: MatTableDataSource<PokemonAccessPoint>;
 
   private readonly destroy$ = new Subject<void>();
 
+  public isAlreadyFavouriteLabel = 'Remove from favourites';
+
+  public isNotYetFavouriteLabel = 'Add to Favourite';
+
   public totalNumberOfPokemons: number;
 
-  public pokemons: Pokemon[];
+  public isAPokemonSelected: boolean;
 
-  constructor(private readonly pokemonService: PokemonService) { }
+  public selectedPokemon: Pokemon;
+
+  public pageSize: number;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  constructor(private pokemonService: PokemonService) { }
 
   public ngOnInit(): void {
+    this.pageSize = 20;
+    this.isAPokemonSelected = false;
     this.getTotalNumberOfPokemons();
-    this.getAllPokemons();
+    this.getAllPokemons(this.pageSize);
   }
 
   public ngOnDestroy(): void {
@@ -63,12 +59,27 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       });
   }
 
-  public getAllPokemons(): void {
+  public getAllPokemons(pageSize: number): void {
     this.pokemonService
-      .getAllPokemons()
+      .getAllPokemons(pageSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe((pokemonList) => {
-        this.pokemons = pokemonList.results
+        this.pokemonsAccessPoints = new MatTableDataSource(pokemonList.results);
+      });
+  }
+
+  public onClickToAddFavourite(pokemon: PokemonAccessPoint): void {
+    pokemon.isFavourite = !pokemon.isFavourite;
+    this.pokemonService.favouritePokemons.push(pokemon.name);
+  }
+
+  public selectPokemon(pokemonName: string): void {
+    this.pokemonService
+      .getPokemonInfos(pokemonName)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pokemon) => {
+        this.isAPokemonSelected = true;
+        this.selectedPokemon = pokemon;
       });
   }
 }

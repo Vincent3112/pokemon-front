@@ -1,7 +1,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { SettingsComponent } from './components/settings/settings.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 
 const routes: Routes = [
@@ -9,11 +9,15 @@ const routes: Routes = [
         path: '',
         component: WelcomeComponent,
     },
+    {
+        path: 'settings',
+        component: SettingsComponent,
+    },
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes)
+        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
     ],
     exports: [
         RouterModule

@@ -2,34 +2,78 @@
 
     <div class="main-panel">
 
-        <div>
-            Main Panel
-        </div>
-
-        <div>
+        <div class="title">
             Total number of Pokemons : {{ totalNumberOfPokemons }}
         </div>
 
-        <div>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Add to favourites</th>
-                </tr>
-                <tr *ngFor="let pokemon of pokemons">
-                    <td>{{ pokemon.name }}</td>
-                    <td> <button mat-button></button></td>
-                </tr>
-            </table>
+        <div class="mat-elevation-z8">
+
+            <mat-table [dataSource]="pokemonsAccessPoints">
+
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                    <mat-cell
+                        (click)="selectPokemon(row.name)"
+                        *matCellDef="let row"
+                        [ngClass]="{'is-favourite': row.isFavourite}"
+                    >
+                        {{row.name}} 
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="addToFavourite">
+                    <mat-header-cell *matHeaderCellDef> Add to Favourite </mat-header-cell>
+                    <mat-cell *matCellDef="let row" [style.color]="row.color">
+                        <button mat-stroked-button color="primary" (click)="onClickToAddFavourite(row)">
+                            {{ row.isFavourite ? isAlreadyFavouriteLabel : isNotYetFavouriteLabel }}
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+
+            <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 40, 100]"></mat-paginator>
         </div>
     </div>
 
     <div class="details-panel">
 
-        <div>
-            Details Panel
+        <div class="card" *ngIf="isAPokemonSelected; else noPokemonSelectedBlock">
+            <mat-card>
+                <mat-card-title class="card-title">
+                    Name : {{selectedPokemon.name}}
+                </mat-card-title>
+
+                <mat-card-content>
+                    <div class="content-item">
+                        <strong>Weight</strong> : {{selectedPokemon.weight}} pounds
+                    </div>
+
+                    <div class="content-item">
+                        <strong>Height</strong> : {{selectedPokemon.height}} inches
+                    </div>
+
+                    <div class="content-item">
+                        <strong>List of abilities :</strong>
+
+                        <div>
+                            <ul *ngFor="let ability of selectedPokemon.abilities">
+                                <li> Name : {{ability.ability.name}} </li>
+                                <li> Effect description : description </li>
+                            </ul>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
         </div>
 
+        <ng-template #noPokemonSelectedBlock class="card">
+            <mat-card>
+                Please select a pokemon to discover its caracteristics
+            </mat-card>
+        </ng-template>
     </div>
-
 </div>
