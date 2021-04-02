@@ -1,0 +1,35 @@
+<div class="container">
+
+    <div class="main-panel">
+
+        <div>
+            Main Panel
+        </div>
+
+        <div>
+            Total number of Pokemons : {{ totalNumberOfPokemons }}
+        </div>
+
+        <div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Add to favourites</th>
+                </tr>
+                <tr *ngFor="let pokemon of pokemons">
+                    <td>{{ pokemon.name }}</td>
+                    <td> <button mat-button></button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="details-panel">
+
+        <div>
+            Details Panel
+        </div>
+
+    </div>
+
+</div>
