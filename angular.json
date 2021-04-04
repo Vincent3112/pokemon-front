@@ -24,7 +24,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/light-theme.scss",
+              "src/dark-theme.scss"
             ],
             "scripts": []
           },
@@ -87,7 +89,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/light-theme.scss",
+              "src/dark-theme.scss"
             ],
             "scripts": []
           }
@@ -118,6 +122,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "pokemon-front"
 }

@@ -11,21 +11,25 @@
             </mat-card-title>
 
             <mat-card-content>
-                <div class="card-item">
-                    <mat-slide-toggle color="primary"> Dark Theme </mat-slide-toggle>
-                </div>
+                <form [formGroup]="form" class="form">
+                    <div class="card-item">
+                        <mat-slide-toggle (change)="onToggle($event)" formControlName="slider" color="primary"> {{
+                            isDarkTheme ? isDarkThemeLabel :
+                            isLightThemeLabel}}
+                        </mat-slide-toggle>
+                    </div>
 
-                <div class="card-item">
-                    <form class="form">
+                    <div class="card-item">
+
                         <mat-form-field class="full-width">
                             <mat-label>Number of items per page</mat-label>
-                            <input matInput placeholder="Ex. 50">
+                            <input formControlName="items" matInput placeholder="Ex : 50">
                         </mat-form-field>
-                    </form>
-                </div>
+                    </div>
+                </form>
 
                 <div class="card-item">
-                    <button mat-raised-button color="primray" (click)="onValidate()"> Valider les paramètres </button>
+                    <button mat-raised-button color="primray" (click)="onValidate()"> Save </button>
                 </div>
 
             </mat-card-content>

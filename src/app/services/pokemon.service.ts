@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
+import { Ability } from "../entities/ability.entity";
 import { PokemonList } from "../entities/pokemon-list.entity";
 import { Pokemon } from "../entities/pokemon.entity";
 
@@ -9,15 +10,19 @@ import { Pokemon } from "../entities/pokemon.entity";
 })
 export class PokemonService {
 
-    public favouritePokemons: string[];
+    public favouritePokemons: string[] = [];
+
+    public pageSize: number;
+
+    public favouritePokemonsNumber = new BehaviorSubject<number>(0);
 
     constructor(private readonly http: HttpClient) { }
 
-    public getAllPokemons(pageSize: number): Observable<PokemonList> {
-        return this.http.get<PokemonList>(`https://pokeapi.co/api/v2/pokemon?limit=${pageSize}`);
+    public getNumberOfPokemons(start: number, end: number): Observable<PokemonList> {
+        return this.http.get<PokemonList>(`https://pokeapi.co/api/v2/pokemon/?offset=${start}&limit=${end}`);
     }
 
-    public getTotalNumberOfPokemons(): Observable<PokemonList> {
+    public getPokemons(): Observable<PokemonList> {
         return this.http.get<PokemonList>('https://pokeapi.co/api/v2/pokemon');
     }
 
@@ -25,7 +30,7 @@ export class PokemonService {
         return this.http.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
     }
 
-    public getFavouritesPokemonNumber() {
-        return this.favouritePokemons.length;
+    public getAbility(ability: string): Observable<Ability> {
+        return this.http.get<Ability>(ability);
     }
 }

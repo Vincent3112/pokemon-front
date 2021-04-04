@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { PokemonService } from './services/pokemon.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,8 @@ import { PokemonService } from './services/pokemon.service';
     BrowserAnimationsModule,
     HttpClientModule,
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     MaterialModule,
     AppRoutingModule

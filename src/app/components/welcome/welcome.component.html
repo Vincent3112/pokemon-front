@@ -2,78 +2,87 @@
 
     <div class="main-panel">
 
-        <div class="title">
-            Total number of Pokemons : {{ totalNumberOfPokemons }}
+        <div *ngIf="mainPanelIsLoaded; else isMainPanelLoading">
+            <div class="title">
+                Total number of Pokemons : {{ totalNumberOfPokemons }}
+            </div>
+
+            <div>
+                <mat-table [dataSource]="dataSource">
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                        <mat-cell (click)="selectPokemon(row.name)" *matCellDef="let row"
+                            [ngClass]="{'is-favourite': row.isFavourite}">
+                            {{row.name}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="addToFavourite">
+                        <mat-header-cell *matHeaderCellDef> Add to Favourite </mat-header-cell>
+                        <mat-cell *matCellDef="let row" [style.color]="row.color">
+                            <button mat-stroked-button color="primary" (click)="onClickToAddFavourite(row)">
+                                {{ row.isFavourite ? isAlreadyFavouriteLabel : isNotYetFavouriteLabel }}
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;">
+                    </mat-row>
+                </mat-table>
+
+                <mat-paginator (page)="onSwitchPageSettings($event, localFavouritesPokemonList)" #paginator [pageSizeOptions]="[5, 10, 25, 50]"
+                    [length]="totalNumberOfPokemons" [pageSize]="pageSize">
+                </mat-paginator>
+            </div>
+
         </div>
-
-        <div class="mat-elevation-z8">
-
-            <mat-table [dataSource]="pokemonsAccessPoints">
-
-                <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                    <mat-cell
-                        (click)="selectPokemon(row.name)"
-                        *matCellDef="let row"
-                        [ngClass]="{'is-favourite': row.isFavourite}"
-                    >
-                        {{row.name}} 
-                    </mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="addToFavourite">
-                    <mat-header-cell *matHeaderCellDef> Add to Favourite </mat-header-cell>
-                    <mat-cell *matCellDef="let row" [style.color]="row.color">
-                        <button mat-stroked-button color="primary" (click)="onClickToAddFavourite(row)">
-                            {{ row.isFavourite ? isAlreadyFavouriteLabel : isNotYetFavouriteLabel }}
-                        </button>
-                    </mat-cell>
-                </ng-container>
-
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;">
-                </mat-row>
-            </mat-table>
-
-            <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 40, 100]"></mat-paginator>
-        </div>
+        <ng-template #isMainPanelLoading>
+            <mat-spinner></mat-spinner>
+        </ng-template>
     </div>
 
     <div class="details-panel">
 
-        <div class="card" *ngIf="isAPokemonSelected; else noPokemonSelectedBlock">
-            <mat-card>
-                <mat-card-title class="card-title">
-                    Name : {{selectedPokemon.name}}
-                </mat-card-title>
+        <div *ngIf="detailsPanelIsLoaded; else isDetailsPanelLoading">
+            <div class="card" *ngIf="isAPokemonSelected; else noPokemonSelected">
+                <mat-card>
+                    <mat-card-title class="card-title">
+                        <strong>{{selectedPokemon.name}}</strong>
+                    </mat-card-title>
 
-                <mat-card-content>
-                    <div class="content-item">
-                        <strong>Weight</strong> : {{selectedPokemon.weight}} pounds
-                    </div>
-
-                    <div class="content-item">
-                        <strong>Height</strong> : {{selectedPokemon.height}} inches
-                    </div>
-
-                    <div class="content-item">
-                        <strong>List of abilities :</strong>
-
-                        <div>
-                            <ul *ngFor="let ability of selectedPokemon.abilities">
-                                <li> Name : {{ability.ability.name}} </li>
-                                <li> Effect description : description </li>
-                            </ul>
+                    <mat-card-content>
+                        <div class="content-item">
+                            <strong>Weight</strong> : {{selectedPokemon.weight/10}} kg
                         </div>
-                    </div>
-                </mat-card-content>
-            </mat-card>
+
+                        <div class="content-item">
+                            <strong>Height</strong> : {{selectedPokemon.height*10}} cm
+                        </div>
+
+                        <div class="content-item">
+                            <strong>List of abilities :</strong>
+
+                            <div>
+                                <ul *ngFor="let ability of selectedPokemonAbilities">
+                                    <li> <strong>Name</strong> : {{ability.name}} </li>
+                                    <li> <strong>Effect description</strong> : {{ability.description}} </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+
+            <ng-template #noPokemonSelected class="card">
+                <mat-card>
+                    Please select a pokemon to discover its caracteristics
+                </mat-card>
+            </ng-template>
         </div>
 
-        <ng-template #noPokemonSelectedBlock class="card">
-            <mat-card>
-                Please select a pokemon to discover its caracteristics
-            </mat-card>
+        <ng-template #isDetailsPanelLoading>
+            <mat-spinner></mat-spinner>
         </ng-template>
     </div>
 </div>
