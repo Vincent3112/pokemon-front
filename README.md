@@ -1,27 +1,22 @@
 # PokemonFront
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
+## Use Case
+
+- This Angular application allows you to search for pokemons and display their characteristics and abilities.
+- You can pick any pokemon you want and add it to your favourite list.
+- It is designed with a light and dark theme that you can pick as you like.
+
+- I hope you will enjoy it ! 😁
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Once you cloned the repo on your local machine, run `npm install` to install all libraries required for the project to run.
 
-## Code scaffolding
+- If anything goes wrong, please check that there are no conflicts between your local npm and Angular versions and the version of this project which is Angular v11.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Run `ng serve` to launch the application. Navigate to `http://localhost:4200/`.
 
-## Build
+## Third-party libraries
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+This application uses [Angular Material](https://material.angular.io/) as design tool.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
