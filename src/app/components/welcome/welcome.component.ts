@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { forkJoin, of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PokemonAccessPoint } from '../../entities/pokemon-access-point.entity';
@@ -7,6 +7,7 @@ import { PokemonService } from '../../services/pokemon.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { PokemonAbility } from '../../entities/pokemon-ability.entity';
 import { Ability } from '../../entities/ability.entity';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-welcome',
@@ -27,7 +28,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
 
   public mainPanelIsLoaded = false;
 
-  public isAlreadyFavouriteLabel = 'Remove from favourites';
+  public isAlreadyFavouriteLabel = 'Remove from favourite';
 
   public isNotYetFavouriteLabel = 'Add to Favourite';
 
@@ -43,13 +44,12 @@ export class WelcomeComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private pokemonService: PokemonService) { }
+  constructor(private pokemonService: PokemonService, @Inject(DOCUMENT) private document: Document) { }
 
   public ngOnInit(): void {
-    this.localFavouritesPokemonList = localStorage.getItem('localFavouritesPokemonList') ? JSON.parse(localStorage.getItem('localFavouritesPokemonList')) : [];
     this.mainPanelIsLoaded = false;
-    this.pageSize = localStorage.getItem('itemsPerPage') ? JSON.parse(localStorage.getItem('itemsPerPage')) : 20;
     this.isAPokemonSelected = false;
+    this.fetchData();
     this.getPokemons(this.localFavouritesPokemonList);
   }
 
@@ -58,20 +58,34 @@ export class WelcomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public onSwitchPageSettings(pageSettings: any, localFavouritesPokemonList: string[]): void {
-    this.pokemonService
-      .getNumberOfPokemons(pageSettings.pageIndex * pageSettings.pageSize, pageSettings.pageSize)
-      .subscribe((pokemons) => {
-        this.dataSource = pokemons.results;
-        this.dataSource.forEach((pokemon) => {
-          localFavouritesPokemonList.forEach((favouritePokemonName) => {
-            if (pokemon.name === favouritePokemonName) {
-              pokemon.isFavourite = true;
-            }
-          })
-        });
-        this.pageSize = pageSettings.pageSize;
-      })
+  private fetchData(): void {
+    this.pokemonService.favouritePokemons = localStorage.getItem('favourites') ? JSON.parse(localStorage.getItem('favourites')) : [];
+    this.pokemonService.favouritePokemonsNumber.next(localStorage.getItem('favouritesNumber') ? JSON.parse(localStorage.getItem('favouritesNumber')) : 0);
+    this.localFavouritesPokemonList = localStorage.getItem('localFavouritesPokemonList') ? JSON.parse(localStorage.getItem('localFavouritesPokemonList')) : [];
+    this.pageSize = localStorage.getItem('itemsPerPage') ? JSON.parse(localStorage.getItem('itemsPerPage')) : 20;
+
+    const themeToApply = localStorage.getItem('theme') ? JSON.parse(localStorage.getItem('theme')) : 'light-theme';
+    if (themeToApply === 'dark-theme') {
+      this.document.body.classList.remove('light-theme');
+      this.document.body.classList.add(themeToApply);
+    }
+  }
+
+  private getEnglishDescriptionOfAbility(ability: Ability): void {
+    let abilityDescription = { name: ability.name, description: '' };
+    ability.effect_entries.forEach(effectEntry => {
+      if (effectEntry.language.name === 'en') {
+        abilityDescription.description = effectEntry.short_effect;
+      }
+    });
+    this.detailsPanelIsLoaded = true;
+    this.selectedPokemonAbilities.push(abilityDescription);
+  }
+
+  private storeData(): void {
+    localStorage.setItem('favouritesNumber', JSON.stringify(this.pokemonService.favouritePokemons.length));
+    localStorage.setItem('favourites', JSON.stringify(this.pokemonService.favouritePokemons));
+    localStorage.setItem('localFavouritesPokemonList', JSON.stringify(this.localFavouritesPokemonList));
   }
 
   public getPokemons(localFavouritesPokemonList?: string[]): void {
@@ -103,10 +117,24 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       }
     }
     this.pokemonService.favouritePokemonsNumber.next(this.pokemonService.favouritePokemons.length);
-    localStorage.setItem('favouritesNumber', JSON.stringify(this.pokemonService.favouritePokemons.length));
-    localStorage.setItem('favourites', JSON.stringify(this.pokemonService.favouritePokemons));
-    localStorage.setItem('localFavouritesPokemonList', JSON.stringify(this.localFavouritesPokemonList));
+    this.storeData();
     pokemon.isFavourite = !pokemon.isFavourite;
+  }
+
+  public onUpdateTableSettings(pageSettings: any, localFavouritesPokemonList: string[]): void {
+    this.pokemonService
+      .getNumberOfPokemons(pageSettings.pageIndex * pageSettings.pageSize, pageSettings.pageSize)
+      .subscribe((pokemons) => {
+        this.dataSource = pokemons.results;
+        this.dataSource.forEach((pokemon) => {
+          localFavouritesPokemonList.forEach((favouritePokemonName) => {
+            if (pokemon.name === favouritePokemonName) {
+              pokemon.isFavourite = true;
+            }
+          })
+        });
+        this.pageSize = pageSettings.pageSize;
+      })
   }
 
   public selectPokemon(pokemonName: string): void {
@@ -137,16 +165,5 @@ export class WelcomeComponent implements OnInit, OnDestroy {
           }
         )
       });
-  }
-
-  private getEnglishDescriptionOfAbility(ability: Ability): void {
-    let abilityDescription = { name: ability.name, description: '' };
-    ability.effect_entries.forEach(effectEntry => {
-      if (effectEntry.language.name === 'en') {
-        abilityDescription.description = effectEntry.short_effect;
-      }
-    });
-    setTimeout(() => this.detailsPanelIsLoaded = true, 200);
-    this.selectedPokemonAbilities.push(abilityDescription);
   }
 }

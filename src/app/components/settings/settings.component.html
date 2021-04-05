@@ -1,9 +1,4 @@
 <div class="container">
-    <div class="back-button">
-        <button mat-button (click)="onGoBack()">
-            <mat-icon>arrow_back</mat-icon> Go back
-        </button>
-    </div>
     <div class="settings">
         <mat-card class="card">
             <mat-card-title class="card-item">
@@ -20,18 +15,23 @@
                     </div>
 
                     <div class="card-item">
-
                         <mat-form-field class="full-width">
                             <mat-label>Number of items per page</mat-label>
-                            <input formControlName="items" matInput placeholder="Ex : 50">
+                            <input type="number" formControlName="items" matInput placeholder="Ex : 50">
                         </mat-form-field>
                     </div>
                 </form>
 
                 <div class="card-item">
-                    <button mat-raised-button color="primray" (click)="onValidate()"> Save </button>
+                    <button
+                        [matTooltip]="form.valid ? 'Go ahead and save settings !' : 'If you save as is, the default page size settings (20) will be applied'"
+                        mat-raised-button
+                        color="primray"
+                        (click)="onValidate()"
+                    >
+                        Save
+                    </button>
                 </div>
-
             </mat-card-content>
         </mat-card>
     </div>

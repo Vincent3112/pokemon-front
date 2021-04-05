@@ -2,15 +2,16 @@
 
 @include mat-core();
 
-$candy-app-primary: mat-palette($mat-indigo);
-$candy-app-accent:  mat-palette($mat-pink, A200, A100, A400);
-$candy-app-theme:   mat-light-theme((
+$light-primary: mat-palette($mat-indigo);
+$light-accent:  mat-palette($mat-pink);
+$light-theme:   mat-light-theme((
   color: (
-    primary: $candy-app-primary,
-    accent: $candy-app-accent,
+    primary: $light-primary,
+    accent: $light-accent,
   )
 ));
 
 .light-theme {
-  @include angular-material-theme($candy-app-theme);}
+  @include angular-material-theme($light-theme);
+}
 

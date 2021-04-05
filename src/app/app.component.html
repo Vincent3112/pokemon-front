@@ -1,12 +1,11 @@
 <mat-toolbar color="primary">
-    <span style="font-size: bold;">MY POKEMONS</span>
-    <span class="example-spacer"></span>
-    <span>Favourite Pokemons : {{ numberOfFavouritePokemons | async}}</span>
-    <span class="example-spacer"></span>
     <button mat-icon-button (click)="onGoToWelcomePage()" class="example-icon favorite-icon"
         aria-label="Example icon-button with heart icon">
         <mat-icon>home</mat-icon>
     </button>
+    <span class="example-spacer"></span>
+    <span>Favourite Pokemons : {{ numberOfFavouritePokemons | async}}</span>
+    <span class="example-spacer"></span>
     <button mat-icon-button (click)="onGoToSettings()" class="example-icon favorite-icon"
         aria-label="Example icon-button with heart icon">
         <mat-icon>settings</mat-icon>

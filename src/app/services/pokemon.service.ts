@@ -12,8 +12,6 @@ export class PokemonService {
 
     public favouritePokemons: string[] = [];
 
-    public pageSize: number;
-
     public favouritePokemonsNumber = new BehaviorSubject<number>(0);
 
     constructor(private readonly http: HttpClient) { }
